@@ -1,0 +1,166 @@
+esphome:
+  name: esp-nb
+  friendly_name: "ESP NB"
+  includes:
+    - "ninebattery.h"
+
+
+#TODO: add board type, wifi, api configuration
+
+
+uart:
+  - rx_pin:
+      number: GPIO14
+#note: internal pullup doesn't work for some reason..
+#      mode:
+#        output: false
+#        input: true
+#        open_drain: false
+#        pullup: true
+#        pulldown: false
+#      inverted: false
+    tx_pin:
+      number: GPIO12
+    baud_rate: 115200
+    id: ninebattery_uart
+
+
+sensor:
+  - platform: custom
+    lambda: |-
+      auto nb = new NinebatterySensor(id(ninebattery_uart), 1000);
+      App.register_component(nb);
+      return {nb->s_status, nb->s_remaining_capacity_perc, nb->s_remaining_capacity, nb->s_actual_capacity, nb->s_factory_capacity, nb->s_current, nb->s_voltage, nb->s_power, nb->s_temperature_zone_0, nb->s_temperature_zone_1, nb->s_voltage_cell_0, nb->s_voltage_cell_1, nb->s_voltage_cell_2, nb->s_voltage_cell_3, nb->s_voltage_cell_4, nb->s_voltage_cell_5, nb->s_voltage_cell_6, nb->s_voltage_cell_7, nb->s_voltage_cell_8, nb->s_voltage_cell_9 };
+    sensors:
+      - name: "Battery status"
+        entity_category: "diagnostic"
+        icon: "mdi:battery-unknown"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Remaining capacity (perc)"
+        device_class: "battery"
+        unit_of_measurement: "%"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Remaining capacity"
+        id: "remaining_capacity_perc"
+        device_class: "energy"
+        unit_of_measurement: "mAh"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Actual capacity"
+        device_class: "energy"
+        unit_of_measurement: "mAh"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Factory capacity"
+        device_class: "energy"
+        unit_of_measurement: "mAh"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Current"
+        device_class: "current"
+        unit_of_measurement: "A"
+        accuracy_decimals: 3
+        filters:
+          - throttle: 15s
+      - name: "Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "V"
+        accuracy_decimals: 3
+        filters:
+          - throttle: 15s
+      - name: "Power"
+        device_class: "power"
+        unit_of_measurement: "W"
+        accuracy_decimals: 3
+        filters:
+          - throttle: 15s
+      - name: "Temperature zone 0"
+        device_class: "temperature"
+        unit_of_measurement: "°C"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Temperature zone 1"
+        device_class: "temperature"
+        unit_of_measurement: "°C"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 0 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 1 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 2 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 3 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 4 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 5 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 6 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 7 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 8 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+      - name: "Cell 9 Voltage"
+        device_class: "voltage"
+        unit_of_measurement: "mV"
+        accuracy_decimals: 0
+        filters:
+          - throttle: 15s
+
+text_sensor:
+  - platform: custom
+    lambda: |-
+      auto nbs = new NinebatterySerialSensor(1000);
+      App.register_component(nbs);
+      return {nbs->s_serial};
+    text_sensors:
+      - name: "Serial"
+        icon: "mdi:identifier"
+        entity_category: "diagnostic"
