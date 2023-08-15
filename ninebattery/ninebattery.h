@@ -12,7 +12,16 @@ public:
             ESP_LOGW(TAG, "get_status failed!");
             return -1000;
         }
+        // https://github.com/etransport/ninebot-docs/wiki/ES2BMS#30-status-register
+
         //status resp (11):    5aa50222200430010086ff          0x5a 0xa5 0x02 0x22 0x20 0x04 0x30 0x01 0x00 0x86 0xff
+
+        //  98 7654 3210
+        //            01 1   - normal/discharging
+        //0000 0100 0001 65  - charging
+        //0010 0100 0001 577 - probably overvoltage
+        //0010 0000 0001 513 - probably normal with warning
+
 
         int16_t resp = response[8] << 8 | response[7];
         ESP_LOGD(TAG, "get_status: %u DF7=%02X DF8=%02X", resp, response[7], response[8]);
@@ -340,5 +349,58 @@ public:
         if (!serialNumber.empty()) {
             s_serial->publish_state(serialNumber);
         }
+    }
+};
+
+
+class NinebatteryStatusSensor : public PollingComponent {
+public:
+    BinarySensor *s_00 = new BinarySensor();
+    BinarySensor *s_01 = new BinarySensor();
+    BinarySensor *s_02 = new BinarySensor();
+    BinarySensor *s_03 = new BinarySensor();
+    BinarySensor *s_04 = new BinarySensor();
+    BinarySensor *s_05 = new BinarySensor();
+    BinarySensor *s_06 = new BinarySensor();
+    BinarySensor *s_07 = new BinarySensor();
+    BinarySensor *s_08 = new BinarySensor();
+    BinarySensor *s_09 = new BinarySensor();
+    BinarySensor *s_10 = new BinarySensor();
+    BinarySensor *s_11 = new BinarySensor();
+    BinarySensor *s_12 = new BinarySensor();
+    BinarySensor *s_13 = new BinarySensor();
+    BinarySensor *s_14 = new BinarySensor();
+    BinarySensor *s_15 = new BinarySensor();
+private:
+    std::int16_t status;
+public:
+    NinebatteryStatusSensor(uint32_t update_interval) : PollingComponent(update_interval) {
+    }
+
+    void setup() override {
+    }
+
+    void update() override {
+        status = nbu->get_status();
+        if (status == -1000) {
+            return;
+        }
+
+        s_00->publish_state((status >> 0) & 1);
+        s_01->publish_state((status >> 1) & 1);
+        s_02->publish_state((status >> 2) & 1);
+        s_03->publish_state((status >> 3) & 1);
+        s_04->publish_state((status >> 4) & 1);
+        s_05->publish_state((status >> 5) & 1);
+        s_06->publish_state((status >> 6) & 1);
+        s_07->publish_state((status >> 7) & 1);
+        s_08->publish_state((status >> 8) & 1);
+        s_09->publish_state((status >> 9) & 1);
+        s_10->publish_state((status >> 10) & 1);
+        s_11->publish_state((status >> 11) & 1);
+        s_12->publish_state((status >> 12) & 1);
+        s_13->publish_state((status >> 13) & 1);
+        s_14->publish_state((status >> 14) & 1);
+        s_15->publish_state((status >> 15) & 1);
     }
 };
