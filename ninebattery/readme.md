@@ -12,6 +12,11 @@ Connection is pretty simple
 - Connect GND of the battery and ESP's
 - Optionally, ESP can be powered from battery itself via dc-dc buck converter
 
+Preview: 
+  
+  ![image](https://github.com/alexbilevskiy/esphome-custom/assets/14160356/af5e3bc1-6cd4-4391-9002-331e714e146a)
+
+
 Credits
 - [etransport/ninebot-docs](https://github.com/etransport/ninebot-docs/wiki/protocol) for protocol documentation
 - [LeoDJ/ESPHome_Nodes](https://github.com/LeoDJ/ESPHome_Nodes/tree/main/CM1106_CO2_Sensor) for custom uart sensor example
